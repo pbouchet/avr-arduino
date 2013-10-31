@@ -22,6 +22,8 @@
 #define HARDWARE_SERIAL_H
 #include <inttypes.h>
 #include "Stream.h"
+
+#define PREINSTANTIATE_SERIAL3
 //------------------------------------------------------------------------------
 struct ring_buffer;
 //------------------------------------------------------------------------------
@@ -31,15 +33,15 @@ public:
         volatile uint8_t *ubrrl, volatile uint8_t *ucsra,
         volatile uint8_t *ucsrb, volatile uint8_t *udr, uint8_t rxen,
         uint8_t txen, uint8_t rxcie, uint8_t udre, uint8_t u2x);
-        int available(void);
-        void begin(unsigned long);
-        void clear();
-        void end();
-        void flush(void);
-        int peek(void);
-        int read(void);
-        size_t write(uint8_t);
-        using Print::write;
+    int available(void);
+    void begin(unsigned long);
+    void clear();
+    void end();
+    void flush(void);
+    int peek(void);
+    int read(void);
+    size_t write(uint8_t);
+    using Print::write;
 //------------------------------------------------------------------------------
 private:
     ring_buffer *_rx_buffer;
@@ -57,5 +59,11 @@ private:
 //------------------------------------------------------------------------------
 extern HardwareSerial Serial;
 extern HardwareSerial Serial1;
+#ifdef PREINSTANTIATE_SERIAL2
+extern HardwareSerial Serial2;
+#endif
+#ifdef PREINSTANTIATE_SERIAL3
+extern HardwareSerial Serial3;
+#endif
 
 #endif // HARDWARE_SERIAL_H

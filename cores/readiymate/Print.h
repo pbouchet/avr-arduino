@@ -23,6 +23,8 @@
 #include <inttypes.h>
 #include <stdio.h> // for size_t
 
+#include "Printable.h"
+
 #define DEC 10
 #define HEX 16
 #define OCT 8
@@ -46,7 +48,10 @@ class Print
     void clearWriteError() { setWriteError(0); }
 
     virtual size_t write(uint8_t) = 0;
-    size_t write(const char *str) { return write((const uint8_t *)str, strlen(str)); }
+    size_t write(const char *str) {
+      if (str == NULL) return 0;
+      return write((const uint8_t *)str, strlen(str));
+    }
     virtual size_t write(const uint8_t *buffer, size_t size);
 
     size_t print(const __FlashStringHelper *);
@@ -58,6 +63,7 @@ class Print
     size_t print(long, int = DEC);
     size_t print(unsigned long, int = DEC);
     size_t print(double, int = 2);
+    size_t print(const Printable&);
 
     size_t println(const __FlashStringHelper *);
     size_t println(const char[]);
@@ -68,6 +74,7 @@ class Print
     size_t println(long, int = DEC);
     size_t println(unsigned long, int = DEC);
     size_t println(double, int = 2);
+    size_t println(const Printable&);
     size_t println(void);
 };
 

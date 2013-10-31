@@ -27,7 +27,7 @@
 #include "HardwareSerial.h"
 #include "wiring_private.h"
 //------------------------------------------------------------------------------
-uint8_t const SERIAL_BUFFER_SIZE = 128;
+uint8_t const SERIAL_BUFFER_SIZE = 32;
 //------------------------------------------------------------------------------
 struct ring_buffer
 {
@@ -38,6 +38,12 @@ struct ring_buffer
 //------------------------------------------------------------------------------
 static ring_buffer rx_buffer0 = {{0}, 0, 0};
 static ring_buffer rx_buffer1 = {{0}, 0, 0};
+#ifdef PREINSTANTIATE_SERIAL2
+static ring_buffer rx_buffer2 = {{0}, 0, 0};
+#endif
+#ifdef PREINSTANTIATE_SERIAL3
+static ring_buffer rx_buffer3 = {{0}, 0, 0};
+#endif
 //------------------------------------------------------------------------------
 static inline __attribute__((always_inline)) void store_char(uint8_t c,
     ring_buffer *buffer) {
@@ -57,6 +63,18 @@ ISR(USART1_RX_vect) {
     uint8_t c = UDR1;
     store_char(c, &rx_buffer1);
 }
+#ifdef PREINSTANTIATE_SERIAL2
+ISR(USART2_RX_vect) {
+    uint8_t c = UDR2;
+    store_char(c, &rx_buffer2);
+}
+#endif
+#ifdef PREINSTANTIATE_SERIAL3
+ISR(USART3_RX_vect) {
+    uint8_t c = UDR3;
+    store_char(c, &rx_buffer3);
+}
+#endif
 //------------------------------------------------------------------------------
 HardwareSerial::HardwareSerial(ring_buffer *rx_buffer0, volatile uint8_t *ubrrh,
     volatile uint8_t *ubrrl, volatile uint8_t *ucsra, volatile uint8_t *ucsrb,
@@ -158,3 +176,11 @@ HardwareSerial Serial(&rx_buffer0, &UBRR0H, &UBRR0L, &UCSR0A, &UCSR0B, &UDR0,
     RXEN0, TXEN0, RXCIE0, UDRE0, U2X0);
 HardwareSerial Serial1(&rx_buffer1, &UBRR1H, &UBRR1L, &UCSR1A, &UCSR1B, &UDR1,
     RXEN1, TXEN1, RXCIE1, UDRE1, U2X1);
+#ifdef PREINSTANTIATE_SERIAL2
+HardwareSerial Serial2(&rx_buffer2, &UBRR2H, &UBRR2L, &UCSR2A, &UCSR2B, &UDR2,
+    RXEN2, TXEN2, RXCIE2, UDRE2, U2X2);
+#endif
+#ifdef PREINSTANTIATE_SERIAL3
+HardwareSerial Serial3(&rx_buffer3, &UBRR3H, &UBRR3L, &UCSR3A, &UCSR3B, &UDR3,
+    RXEN3, TXEN3, RXCIE3, UDRE3, U2X3);
+#endif
