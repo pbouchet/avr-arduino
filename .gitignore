@@ -1,7 +1,3 @@
 programmers.txt
 firmwares/
 bootloaders/
-cores/*
-!cores/readiymate
-variants/*
-!variants/readiymate
